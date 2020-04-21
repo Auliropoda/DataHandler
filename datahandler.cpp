@@ -5,24 +5,11 @@ using namespace std;
 
 DataHandler::DataHandler(const DataHandler &h)
 {
-    if (data == h.data)
-        return;
-    if (h.data == nullptr)
-        return;
-    if (h.refCounter == nullptr)
-        return;
-
-    (*h.refCounter)--;
-
-    if((*h.refCounter) == 0)
-    {
-        delete h.refCounter;
-        delete h.data;
-    }
-
-    data = h.data;
+   data = h.data;
     refCounter = h.refCounter;
-    (*refCounter)++;
+
+    if (refCounter  && *refCounter != 0)
+        (*refCounter)++;
 }
 
 DataHandler::~DataHandler()
@@ -30,7 +17,7 @@ DataHandler::~DataHandler()
     if (refCounter == nullptr)
         return;
 
-    (refCounter)--;
+    (*refCounter)--;
 
     if((*refCounter) == 0)
     {
@@ -43,6 +30,7 @@ DataHandler::~DataHandler()
 
 Data* DataHandler::operator ->()
 {
+    ensureUnique();
     return data;
 }
 
@@ -56,10 +44,20 @@ void DataHandler::ensureInitialized() const
 {
     if (data == nullptr)
     {
-
-        Data temp;
-        *data = temp;
+      data = new Data;
+      refCounter = new int(1);
     }
+
+}
+
+void DataHandler::ensureUnique()
+{
+    if((*refCounter) != 1)
+    {
+        Data coppy(*data);
+        (*refCounter)--;
+    }
+
 }
 
 

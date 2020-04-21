@@ -36,8 +36,10 @@ public:
     // Убеждаемся, что данные уникальны и спокойно возвращаем.
     Data *operator ->();
 
+    //для себя
+
 private:
-    mutable int *refCounter; // указатель на счетчик ссылок
+    mutable int *refCounter = nullptr; // указатель на счетчик ссылок
     mutable Data *data = nullptr;
 
     // Проверяем, держим ли мы данные, если нет - создаем.
